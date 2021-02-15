@@ -1,6 +1,7 @@
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
 import os
+import zipfile
 
 gauth = GoogleAuth()
 gauth.LoadCredentialsFile("DBCRD.txt")
@@ -14,19 +15,70 @@ else:
 gauth.SaveCredentialsFile("DBCRD.txt")
 drive = GoogleDrive(gauth)
 
-try:
-    os.mkdir("server")
-except IOError:
-    pass
+
 
 print("Hola!, esto es una prueba para ver si lo drive funciona")
 
-i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? (De 1.16 a 1.12)")
+i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? (De 1.16 a 1.12) o pon saltar si tienes ya un server ")
 
 if i == "1.16.4":
     print("Comienza la descarga del servidor...")
-    server = drive.CreateFile({'id': "1EiZGKJ8H5Wzqd7MWotzwapPV-9nhxbyW"})
+    server = drive.CreateFile({'id': "1UtN8XxNDBIJ7s4lYR_fKBR7Gg6Zz_bAS"})
     lugar_del_archivo = os.path.dirname(os.path.abspath(__file__))
-    archivo2 = os.path.join(lugar_del_archivo, "server/server.zip")
+    archivo2 = os.path.join(lugar_del_archivo, "server.zip")
+    archivo3 = os.path.join(lugar_del_archivo, "server")
     server.GetContentFile(archivo2)
     print("se ha acabado la descarga del servidor")
+    print("extrayendo el servidor")
+    with zipfile.ZipFile("server.zip") as extraccion:
+        extraccion.extractall(archivo3)
+    print("se ha acabado de extraccion")
+    try:
+        os.remove("server.zip")
+    except IOError:
+        pass
+
+if i == "saltar":
+    pass
+# se contiua con las diferentes versiones
+
+i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
+
+with open("server/server.properties", "w") as propedades:
+    if i2 == "pacifico":
+        dificultad = "peaceful"
+    if i2 == "facil":
+        dificultad = "easy"
+    if i2 == "normal":
+        dificultad = i2
+    if i2 == "dificil":
+        dificultad = "hard"
+    if i2 == "hardcore":
+        dificultad = "hard"
+        propedades.write("hardcore=true")
+    propedades.write(f"\ndifficulty={dificultad}")
+
+    i3 = input("Que modo? (survival, creativo o aventura) ")
+
+    if i3 == "survival":
+        propedades.write("\ngamemode=0")
+    if i3 == "creativo":
+        propedades.write("\ngamemode=1")
+    if i3 == "aventura":
+        propedades.write("\ngamemode=2")
+
+
+i4 = input("Quieres que el mundo se suba automaticamente a drive y se descargue cuando se abra el servidor? si dices que si, se te preguntara la cuenta de google")
+
+if i4 == "si":
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()
+    gauth.SaveCredentialsFile("DBCRD.txt")
+    with open("server/start.bat", "w") as start:
+        start.write("python descargar_drive.py")
+        start.write("\njava -Xms1G -Xmx3G -jar paper-1.16.4-393.jar -nogui")
+        start.write("\npython drive_flojito.py")
+        start.write("\nPAUSE")
+
+        
+
