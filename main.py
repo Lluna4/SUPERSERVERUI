@@ -22,23 +22,78 @@ drive = GoogleDrive(gauth)
 print("Hola!, esto es una prueba para ver si lo drive funciona")
 
 i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? (De 1.16 a 1.12) o pon saltar si tienes ya un server ")
-
+os.mkdir("server")
+if i == "1.16.5":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
 if i == "1.16.4":
-    print("Comienza la descarga del servidor...")
-    server = drive.CreateFile({'id': "1UtN8XxNDBIJ7s4lYR_fKBR7Gg6Zz_bAS"})
-    lugar_del_archivo = os.path.dirname(os.path.abspath(__file__))
-    archivo2 = os.path.join(lugar_del_archivo, "server.zip")
-    archivo3 = os.path.join(lugar_del_archivo, "server")
-    server.GetContentFile(archivo2)
-    print("se ha acabado la descarga del servidor")
-    print("extrayendo el servidor")
-    with zipfile.ZipFile("server.zip") as extraccion:
-        extraccion.extractall(archivo3)
-    print("se ha acabado de extraccion")
-    try:
-        os.remove("server.zip")
-    except IOError:
-        pass
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.4.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
+
+if i == "1.16.3":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.3.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
+
+if i == "1.16.2":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.2.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
+
+if i == "1.16.1":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.1.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
+
+
+if i == "1.15.2":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.15.2.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
+
+if i == "1.15.1":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.15.1.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
+
+if i == "1.15":
+    print("descargando")
+    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.15.jar", allow_redirects=True)
+    print("se ha descargado")
+    with open("server/server.jar", "wb") as jar:
+        jar.write(archivo.content)
+    with open("server/eula.txt", "x") as eula:
+        eula.write("eula=true")
 
 if i == "saltar":
     pass
@@ -46,7 +101,7 @@ if i == "saltar":
 
 i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
 
-with open("server/server.properties", "w") as propedades:
+with open("server/server.properties", "x") as propedades:
     if i2 == "pacifico":
         dificultad = "peaceful"
     if i2 == "facil":
@@ -112,6 +167,8 @@ if i4 == "si":
         start.write("\njava -Xms1G -Xmx3G -jar server.jar -nogui")
         start.write("\npython drive_flojito.py")
         start.write("\nPAUSE")
+    
+    #A partir de aqui se descargan drive_flojito y descargar_drive (cuando esten acabados)
 
         
 
