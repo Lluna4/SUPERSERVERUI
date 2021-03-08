@@ -4,6 +4,9 @@ import os
 import zipfile
 import requests
 import socket
+import tqdm
+from tqdm import tqdm
+
 
 gauth = GoogleAuth()
 gauth.LoadCredentialsFile("DBCRD.txt")
@@ -23,77 +26,29 @@ print("Hola!, esto es una prueba para ver si lo drive funciona")
 
 i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? (De 1.16 a 1.12) o pon saltar si tienes ya un server ")
 os.mkdir("server")
-if i == "1.16.5":
+mod = "-mod" in i
+if  mod == False:
     print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar", allow_redirects=True)
+    archivo = requests.get(f"https://cdn.getbukkit.org/spigot/spigot-{i}.jar", allow_redirects=True, stream=True)
+    total_size_in_bytes= int(archivo.headers.get('content-length', 0))
+    block_size = 1024 #1 Kibibyte
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    with open('test.dat', 'wb') as file:
+        for data in archivo.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+        print("ERROR, something went wrong")
     print("se ha descargado")
     with open("server/server.jar", "wb") as jar:
         jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
-if i == "1.16.4":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.4.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
-
-if i == "1.16.3":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.3.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
-
-if i == "1.16.2":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.2.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
-
-if i == "1.16.1":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.16.1.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
+    with open("server/eula.txt", "w") as eula:
         eula.write("eula=true")
 
 
-if i == "1.15.2":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.15.2.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
+#if mod == True: se desarrollara cuando se acabe la primera parte
 
-if i == "1.15.1":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.15.1.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
-
-if i == "1.15":
-    print("descargando")
-    archivo = requests.get("https://cdn.getbukkit.org/spigot/spigot-1.15.jar", allow_redirects=True)
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "x") as eula:
-        eula.write("eula=true")
 
 if i == "saltar":
     pass
@@ -101,7 +56,7 @@ if i == "saltar":
 
 i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
 
-with open("server/server.properties", "x") as propedades:
+with open("server/server.properties", "w") as propedades:
     if i2 == "pacifico":
         dificultad = "peaceful"
     if i2 == "facil":
