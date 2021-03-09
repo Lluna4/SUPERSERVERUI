@@ -6,8 +6,13 @@ import requests
 import socket
 import tqdm
 from tqdm import tqdm
+import tkinter
+from tkinter import Tk
+import shutil
 
-
+r = Tk()
+r.withdraw()
+r.clipboard_clear()
 gauth = GoogleAuth()
 gauth.LoadCredentialsFile("DBCRD.txt")
 if gauth.credentials is None:
@@ -19,40 +24,61 @@ else:
 
 gauth.SaveCredentialsFile("DBCRD.txt")
 drive = GoogleDrive(gauth)
-
+si = True
+si2 = False
 
 
 print("Hola!, esto es una prueba para ver si lo drive funciona")
 
-i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? (De 1.16 a 1.12) o pon saltar si tienes ya un server ")
-os.mkdir("server")
-mod = "-mod" in i
-if  mod == False:
-    print("descargando")
-    archivo = requests.get(f"https://cdn.getbukkit.org/spigot/spigot-{i}.jar", allow_redirects=True, stream=True)
-    total_size_in_bytes= int(archivo.headers.get('content-length', 0))
-    block_size = 1024 #1 Kibibyte
-    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-    with open('test.dat', 'wb') as file:
-        for data in archivo.iter_content(block_size):
-            progress_bar.update(len(data))
-            file.write(data)
-    progress_bar.close()
-    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-        print("ERROR, something went wrong")
-    print("se ha descargado")
-    with open("server/server.jar", "wb") as jar:
-        jar.write(archivo.content)
-    with open("server/eula.txt", "w") as eula:
-        eula.write("eula=true")
+while si == True:
+    i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? \n(De 1.16 a 1.12) o pon saltar si tienes ya un server ")
+    if  i != "saltar":
+        try: 
+            i_int = int(i[:1])
+            
+        except ValueError:
+            print("por favor ponga una version existente")
+            
+            si2 = True
+
+        if si2 == False:
+            mod = "-mod" in i
+            if  mod == False and i != "saltar":
+                try:
+                    os.mkdir("server")
+                except IOError:
+                    shutil.rmtree("server", ignore_errors=True)
+                    os.mkdir("server")
+                
+                try:
+                    print("descargando")
+                    archivo = requests.get(f"https://cdn.getbukkit.org/spigot/spigot-{i}.jar", allow_redirects=True, stream=True)
+                    total_size_in_bytes= int(archivo.headers.get('content-length', 0))
+                    block_size = 1024 #1 Kibibyte
+                    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+                    with open('server/server.jar', 'wb') as file:
+                        for data in archivo.iter_content(block_size):
+                            progress_bar.update(len(data))
+                            file.write(data)
+                    progress_bar.close()
+                    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+                        print("ERROR, something went wrong")
+                    print("se ha descargado")
 
 
-#if mod == True: se desarrollara cuando se acabe la primera parte
+                    with open("server/eula.txt", "w") as eula:
+                        eula.write("eula=true")
+                    si = False
+                except requests.exceptions.RequestException:
+                    print("Ha ocurrido un error, quizas la version no existe o se ha escrito mal")
 
 
-if i == "saltar":
-    pass
-# se contiua con las diferentes versiones
+    #if mod == True: se desarrollara cuando se acabe la primera parte
+
+
+    if i == "saltar":
+        si = False
+
 
 i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
 
@@ -81,6 +107,9 @@ with open("server/server.properties", "w") as propedades:
     ip = socket.gethostbyname(socket.gethostname())
 
     propedades.write(f"\nip={ip}")
+    ip_str = str(ip)
+    r.clipboard_append(ip_str)
+    r.update()
 
 
 i4 = input("Quieres que el mundo se suba automaticamente a drive y se descargue cuando se abra el servidor? si dices que si, se te preguntara la cuenta de google ")
@@ -119,10 +148,24 @@ if i4 == "si":
     
     with open("server/start.bat", "w") as start:
         start.write("python descargar_drive.py")
-        start.write("\njava -Xms1G -Xmx3G -jar server.jar -nogui")
+        start.write("\njava -Xms1G -Xmx3G -jar server.jar -nogui") #-nogui funciona a veces
         start.write("\npython drive_flojito.py")
         start.write("\nPAUSE")
+else:
+    with open("server/start.bat", "w") as start:
+
+        start.write("\njava -Xms1G -Xmx3G -jar server.jar -nogui") #-nogui funciona a veces
+
+        start.write("\nPAUSE")
     
+    print(f"Tu ip es: {ip}, se te ha copiado en el portapapeles")
+
+    
+
+    
+
+
+
     #A partir de aqui se descargan drive_flojito y descargar_drive (cuando esten acabados)
 
         
