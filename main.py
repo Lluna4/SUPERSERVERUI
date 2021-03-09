@@ -137,13 +137,13 @@ if i4 == "si":
     id3 = str(id3[0])
     id3 = id3[77:-371]
 
-    with open("world_id.txt", "w") as world_id:
+    with open("server/world_id.txt", "w") as world_id:
         world_id.write(id1)
     
-    with open("world_nether_id.txt", "w") as world_nether_id:
+    with open("server/world_nether_id.txt", "w") as world_nether_id:
         world_nether_id.write(id2)
     
-    with open("world_the_end_id.txt", "w") as world_the_end_id:
+    with open("server/world_the_end_id.txt", "w") as world_the_end_id:
         world_the_end_id.write(id3)
     
     with open("server/start.bat", "w") as start:
@@ -151,6 +151,12 @@ if i4 == "si":
         start.write("\njava -Xms1G -Xmx3G -jar server.jar -nogui") #-nogui funciona a veces
         start.write("\npython drive_flojito.py")
         start.write("\nPAUSE")
+    descargar = drive.CreateFile({'id': "1F1GuxKgRtyk7ziVmVvdR9JN0ZEcWBGlw"})
+    descargar.GetContentFile("server/descargar_drive.py")
+    subir = drive.CreateFile({'id': "1_Awy6gc7HVTIRyCdRUveLrPv5puJbhAv"})
+    subir.GetContentFile("server/drive_flojito.py")
+    secreto = drive.CreateFile({'id': "1f1tFSG3ZZLBGgb032kDbOAS0Fzj3KMIc"})
+    secreto.GetContentFile("server/client_secrets.json")
 else:
     with open("server/start.bat", "w") as start:
 
@@ -166,7 +172,7 @@ else:
 
 
 
-    #A partir de aqui se descargan drive_flojito y descargar_drive (cuando esten acabados)
+  
 
         
 
