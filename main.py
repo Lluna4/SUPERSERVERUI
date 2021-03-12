@@ -121,21 +121,22 @@ if i4 == "si":
     drive = GoogleDrive(gauth)
     world = drive.CreateFile({'title': 'world.txt'})
     world.Upload()
+    overworld = drive.ListFile().GetList()
+    print("creando los archivos de drive...")
+    for file in overworld:
+        id1 = file["id"]
+        
     world_nether = drive.CreateFile({'title': 'world_nether.txt'})
     world_nether.Upload()
+    nether = drive.ListFile().GetList()
+    for file in nether:
+        id2 = file["id"]
     world_the_end = drive.CreateFile({'title': 'world_the_end.txt'})
     world_the_end.Upload()
-    id1 = world.GetPermissions()
-    id1 = str(id1[0])
-    id1 = id1[77:-371]
+    end = drive.ListFile().GetList()
+    for file in end:
+        id3 = file["id"]
 
-    id2 = world_nether.GetPermissions()
-    id2 = str(id2[0])
-    id2 = id2[77:-371]
-
-    id3 = world_the_end.GetPermissions()
-    id3 = str(id3[0])
-    id3 = id3[77:-371]
 
     with open("server/world_id.txt", "w") as world_id:
         world_id.write(id1)
@@ -146,17 +147,22 @@ if i4 == "si":
     with open("server/world_the_end_id.txt", "w") as world_the_end_id:
         world_the_end_id.write(id3)
     
+    print("creados!")
+    
     with open("server/start.bat", "w") as start:
         start.write("python descargar_drive.py")
         start.write("\njava -Xms1G -Xmx3G -jar server.jar -nogui") #-nogui funciona a veces
         start.write("\npython drive_flojito.py")
         start.write("\nPAUSE")
+    print("descargando scripts!")
     descargar = drive.CreateFile({'id': "1F1GuxKgRtyk7ziVmVvdR9JN0ZEcWBGlw"})
     descargar.GetContentFile("server/descargar_drive.py")
     subir = drive.CreateFile({'id': "1_Awy6gc7HVTIRyCdRUveLrPv5puJbhAv"})
     subir.GetContentFile("server/drive_flojito.py")
     secreto = drive.CreateFile({'id': "1f1tFSG3ZZLBGgb032kDbOAS0Fzj3KMIc"})
     secreto.GetContentFile("server/client_secrets.json")
+    print("hecho!")
+    
 else:
     with open("server/start.bat", "w") as start:
 
