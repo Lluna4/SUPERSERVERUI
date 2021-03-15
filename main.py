@@ -26,12 +26,16 @@ gauth.SaveCredentialsFile("DBCRD.txt")
 drive = GoogleDrive(gauth)
 si = True
 si2 = False
+si3 = False
+si4 = False
+
 
 
 print("Hola!, esto es una prueba para ver si lo drive funciona")
-
+print("Vamos a empezar con unas simples preguntas,")
 while si == True:
-    i = input("Vamos a empezar con unas simples preguntas, la primera y mas importante: De que version queres el server? \n(De 1.16 a 1.12) o pon saltar si tienes ya un server ")
+    
+    i = input("la primera y mas importante: De que version queres el server? (De 1.16 a 1.12) o pon saltar si tienes ya un server ")
     if  i != "saltar":
         try: 
             i_int = int(i[:1])
@@ -42,8 +46,8 @@ while si == True:
             si2 = True
 
         if si2 == False:
-            mod = "-mod" in i
-            if  mod == False and i != "saltar":
+            
+            if i != "saltar":
                 try:
                     os.mkdir("server")
                 except IOError:
@@ -51,65 +55,90 @@ while si == True:
                     os.mkdir("server")
                 
                 try:
-                    print("descargando")
+                    
                     archivo = requests.get(f"https://cdn.getbukkit.org/spigot/spigot-{i}.jar", allow_redirects=True, stream=True)
                     total_size_in_bytes= int(archivo.headers.get('content-length', 0))
-                    block_size = 1024 #1 Kibibyte
-                    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-                    with open('server/server.jar', 'wb') as file:
-                        for data in archivo.iter_content(block_size):
-                            progress_bar.update(len(data))
-                            file.write(data)
-                    progress_bar.close()
-                    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-                        print("ERROR, something went wrong")
-                    print("se ha descargado")
+                    if total_size_in_bytes < 2000000:
+
+                        print("Ha ocurrido un error, quizas la version no existe o se ha escrito mal")
+                    elif total_size_in_bytes > 2000000:
+                        print("descargando")
+                        block_size = 4096 #4 Kibibytes
+                        progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+                        with open('server/server.jar', 'wb') as file:
+                            for data in archivo.iter_content(block_size):
+                                progress_bar.update(len(data))
+                                file.write(data)
+                        progress_bar.close()
+  
+                        print("se ha descargado")
 
 
-                    with open("server/eula.txt", "w") as eula:
-                        eula.write("eula=true")
-                    si = False
+                        with open("server/eula.txt", "w") as eula:
+                            eula.write("eula=true")
+                        si = False
+                        si3 = True
                 except requests.exceptions.RequestException:
                     print("Ha ocurrido un error, quizas la version no existe o se ha escrito mal")
 
 
-    #if mod == True: se desarrollara cuando se acabe la primera parte
+    
 
 
     if i == "saltar":
         si = False
+        si3 = True
 
+while si3 == True:
+    i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
 
-i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
-
-with open("server/server.properties", "w") as propedades:
-    if i2 == "pacifico":
-        dificultad = "peaceful"
-    if i2 == "facil":
-        dificultad = "easy"
-    if i2 == "normal":
-        dificultad = i2
-    if i2 == "dificil":
-        dificultad = "hard"
-    if i2 == "hardcore":
-        dificultad = "hard"
-        propedades.write("hardcore=true")
+    with open("server/server.properties", "w") as propedades:
+        if i2 == "pacifico":
+            dificultad = "peaceful"
+            si3 = False
+            si4 = True
+        if i2 == "facil":
+            dificultad = "easy"
+            si3 = False
+            si4 = True
+        if i2 == "normal":
+            dificultad = i2
+            si3 = False
+            si4 = True
+        if i2 == "dificil":
+            dificultad = "hard"
+            si3 = False
+            si4 = True
+        if i2 == "hardcore":
+            dificultad = "hard"
+            propedades.write("hardcore=true")
+            si3 = False
+            si4 = True
+        else:
+            pass
+with open("server/server.properties", "a") as propedades:
     propedades.write(f"\ndifficulty={dificultad}")
-
+while si4 == True:
     i3 = input("Que modo? (survival, creativo o aventura) ")
+    with open("server/server.properties", "a") as propedades:
+        if i3 == "survival":
+            propedades.write("\ngamemode=0")
+            si4 = False
+        if i3 == "creativo":
+            propedades.write("\ngamemode=1")
+            si4 = False
+        if i3 == "aventura":
+            propedades.write("\ngamemode=2")
+            si4 = False
+        else:
+            pass
 
-    if i3 == "survival":
-        propedades.write("\ngamemode=0")
-    if i3 == "creativo":
-        propedades.write("\ngamemode=1")
-    if i3 == "aventura":
-        propedades.write("\ngamemode=2")
-    ip = socket.gethostbyname(socket.gethostname())
-
+ip = socket.gethostbyname(socket.gethostname())
+with open("server/server.properties", "a") as propedades:
     propedades.write(f"\nip={ip}")
-    ip_str = str(ip)
-    r.clipboard_append(ip_str)
-    r.update()
+ip_str = str(ip)
+r.clipboard_append(ip_str)
+r.update()
 
 
 i4 = input("Quieres que el mundo se suba automaticamente a drive y se descargue cuando se abra el servidor? si dices que si, se te preguntara la cuenta de google ")
@@ -117,7 +146,7 @@ i4 = input("Quieres que el mundo se suba automaticamente a drive y se descargue 
 if i4 == "si":
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()
-    gauth.SaveCredentialsFile("DBCRD.txt")
+    gauth.SaveCredentialsFile("server/DBCRD.txt")
     drive = GoogleDrive(gauth)
     world = drive.CreateFile({'title': 'world.txt'})
     world.Upload()
