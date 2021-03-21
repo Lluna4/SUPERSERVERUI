@@ -9,6 +9,7 @@ from tqdm import tqdm
 import tkinter
 from tkinter import Tk
 import shutil
+import psutil
 
 r = Tk()
 r.withdraw()
@@ -29,7 +30,16 @@ si2 = False
 si3 = False
 si4 = False
 
+mem = psutil.virtual_memory()
 
+gb = mem.total  / (1024.0 ** 3)
+
+if gb < 3.0:
+    si = input(f"No tienes suficiente ram para correr un servidor correctamente, seguir? tienes {gb} GB de ram")
+    if si == "si":
+        pass
+    if si == "no":
+        quit
 
 print("Hola!, esto es una prueba para ver si lo drive funciona")
 print("Vamos a empezar con unas simples preguntas,")
