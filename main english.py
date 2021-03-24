@@ -37,30 +37,30 @@ gb = mem.total  / (1024.0 ** 3)
 print(f"tienes {gb} GB de ram")
 
 if gb < 3.0:
-    si = input(f"No tienes suficiente ram para correr un servidor correctamente, seguir? tienes {gb} GB de ram")
-    if si == "si":
+    si = input(f"You don't have enough ram for hosting a server continue? You have {gb} GB of ram")
+    if si == "yes":
         pass
     if si == "no":
         quit
 
-print("Hola!, esto es una prueba para ver si lo drive funciona")
-print("Vamos a empezar con unas simples preguntas,")
+#print("Hola!, esto es una prueba para ver si lo drive funciona")
+print("We will be beginning with simple questions,")
 
 while si == True:
     
-    i = input("la primera y mas importante: De que version queres el server? o pon saltar si tienes ya un server ")
-    if  i != "saltar":
+    i = input("The first and the most important: Which version do you want for the server? write skip if you have already one server")
+    if  i != "skip":
         try: 
             i_int = int(i[:1])
             
         except ValueError:
-            print("por favor ponga una version existente")
+            print("please write an existing version")
             
             si2 = True
 
         if si2 == False:
             
-            if i != "saltar":
+            if i != "skip":
                 try:
                     os.mkdir("server")
                 except IOError:
@@ -73,7 +73,7 @@ while si == True:
                     total_size_in_bytes= int(archivo.headers.get('content-length', 0))
                     if total_size_in_bytes < 2000000:
 
-                        print("Ha ocurrido un error, quizas la version no existe o se ha escrito mal")
+                        print("Error, maybe you wrote something wrong in the verion")
                     elif total_size_in_bytes > 2000000:
                         print("descargando")
                         block_size = 4096 #4 Kibibytes
@@ -84,7 +84,7 @@ while si == True:
                                 file.write(data)
                         progress_bar.close()
   
-                        print("se ha descargado")
+                        print("Downloaded!")
 
 
                         with open("server/eula.txt", "w") as eula:
@@ -92,25 +92,25 @@ while si == True:
                         si = False
                         si3 = True
                 except requests.exceptions.RequestException:
-                    print("Ha ocurrido un error, quizas la version no existe o se ha escrito mal")
+                    print("Error, maybe you wrote something wrong in the verion")
 
 
     
 
 
-    if i == "saltar":
+    if i == "skip":
         si = False
         si3 = True
 
 while si3 == True:
-    i2 = input("Que dificultad quieres? (de pacifico a hardcore) ")
+    i2 = input("What difficulty you want? (from peaceful to hardcore) ")
 
     with open("server/server.properties", "w") as propedades:
-        if i2 == "pacifico":
+        if i2 == "peaceful":
             dificultad = "peaceful"
             si3 = False
             si4 = True
-        if i2 == "facil":
+        if i2 == "easy":
             dificultad = "easy"
             si3 = False
             si4 = True
@@ -118,7 +118,7 @@ while si3 == True:
             dificultad = i2
             si3 = False
             si4 = True
-        if i2 == "dificil":
+        if i2 == "hard":
             dificultad = "hard"
             si3 = False
             si4 = True
@@ -132,15 +132,15 @@ while si3 == True:
 with open("server/server.properties", "a") as propedades:
     propedades.write(f"\ndifficulty={dificultad}")
 while si4 == True:
-    i3 = input("Que modo? (survival, creativo o aventura) ")
+    i3 = input("Which mode do you want (survival, creative or adventure) ")
     with open("server/server.properties", "a") as propedades:
         if i3 == "survival":
             propedades.write("\ngamemode=0")
             si4 = False
-        if i3 == "creativo":
+        if i3 == "creative":
             propedades.write("\ngamemode=1")
             si4 = False
-        if i3 == "aventura":
+        if i3 == "adventure":
             propedades.write("\ngamemode=2")
             si4 = False
         else:
@@ -154,9 +154,9 @@ r.clipboard_append(ip_str)
 r.update()
 
 
-i4 = input("Quieres que el mundo se suba automaticamente a drive y se descargue cuando se abra el servidor? si dices que si, se te preguntara la cuenta de google ")
+i4 = input("Do you want the world to be uploaded to google drive? ")
 
-if i4 == "si":
+if i4 == "yes":
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()
     gauth.SaveCredentialsFile("server/DBCRD.txt")
@@ -164,7 +164,7 @@ if i4 == "si":
     world = drive.CreateFile({'title': 'world.txt'})
     world.Upload()
     overworld = drive.ListFile().GetList()
-    print("creando los archivos de drive...")
+    print("Creating files...")
     for file in overworld:
         id1 = file["id"]
         
@@ -189,7 +189,7 @@ if i4 == "si":
     with open("server/world_the_end_id.txt", "w") as world_the_end_id:
         world_the_end_id.write(id3)
     
-    print("creados!")
+    print("created!")
     if gb < 8.0:
         with open("server/start.bat", "w") as start:
             start.write("python descargar_drive.py")
@@ -203,14 +203,14 @@ if i4 == "si":
             start.write("\npython drive_flojito.py")
             start.write("\nPAUSE")      
 
-    print("descargando scripts!")
+    print("downloading scripts!")
     descargar = drive.CreateFile({'id': "1F1GuxKgRtyk7ziVmVvdR9JN0ZEcWBGlw"})
     descargar.GetContentFile("server/descargar_drive.py")
     subir = drive.CreateFile({'id': "1_Awy6gc7HVTIRyCdRUveLrPv5puJbhAv"})
     subir.GetContentFile("server/drive_flojito.py")
     secreto = drive.CreateFile({'id': "1f1tFSG3ZZLBGgb032kDbOAS0Fzj3KMIc"})
     secreto.GetContentFile("server/client_secrets.json")
-    print("hecho!")
+    print("done!")
     
 else:
     if gb < 8.0:
@@ -229,7 +229,7 @@ else:
 
             start.write("\nPAUSE")
     
-print(f"Tu ip es: {ip}, se te ha copiado en el portapapeles")
+print(f"Your ip is: {ip}, it has been copied in the clipboard")
 
     
 
